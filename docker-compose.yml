@@ -1,0 +1,19 @@
+version: '4.1'
+
+services:
+  hgu-contacts-docker:
+    build: .
+    image: cron-urls
+    container_name: cron-urls
+    env_file: .env
+    volumes:
+      - .:/home/node/app
+      - ./node_modules:/home/node/app/node_modules
+      - ./package.json:/home/node/app/package.json
+    expose:
+      - '3000'
+    ports:
+      - '3000:3000'
+    command: npm run start:dev
+volumes:
+  dbdata:
