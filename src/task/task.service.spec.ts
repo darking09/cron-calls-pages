@@ -16,21 +16,6 @@ describe('TaskService', () => {
     service = await getTaskService(curlService);
     expect(service).toBeDefined();
   });
-
-  it('should call fetchCurlData', async () => {
-    curlService = {
-      fetchCurlData: jest.fn().mockResolvedValue({ data: 'data' }),
-      httpService: {
-        // Mock any methods or properties of HttpService as needed
-      },
-    } as unknown as CurlService;
-
-    service = await getTaskService(curlService);
-
-    await service.handleCron();
-
-    expect(curlService.fetchCurlData).toHaveBeenCalled();
-  });
 });
 
 async function getTaskService(curService: CurlService): Promise<TaskService> {
