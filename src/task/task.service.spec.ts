@@ -1,18 +1,48 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { TaskService } from './task.service';
+import { CurlService } from '../curl/curl.service';
 
 describe('TaskService', () => {
   let service: TaskService;
+  let curlService: CurlService;
 
-  beforeEach(async () => {
-    const module: TestingModule = await Test.createTestingModule({
-      providers: [TaskService],
-    }).compile();
-
-    service = module.get<TaskService>(TaskService);
-  });
-
-  it('should be defined', () => {
+  it('should be defined', async () => {
+    curlService = {
+      fetchCurlData: jest.fn(),
+      httpService: {
+        // Mock any methods or properties of HttpService as needed
+      },
+    } as unknown as CurlService;
+    service = await getTaskService(curlService);
     expect(service).toBeDefined();
   });
+
+  it('should call fetchCurlData', async () => {
+    curlService = {
+      fetchCurlData: jest.fn().mockResolvedValue({ data: 'data' }),
+      httpService: {
+        // Mock any methods or properties of HttpService as needed
+      },
+    } as unknown as CurlService;
+
+    service = await getTaskService(curlService);
+
+    await service.handleCron();
+
+    expect(curlService.fetchCurlData).toHaveBeenCalled();
+  });
 });
+
+async function getTaskService(curService: CurlService): Promise<TaskService> {
+  const module: TestingModule = await Test.createTestingModule({
+    providers: [
+      TaskService,
+      {
+        provide: CurlService,
+        useValue: curService,
+      },
+    ],
+  }).compile();
+
+  return module.get<TaskService>(TaskService);
+}
