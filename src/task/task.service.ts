@@ -6,6 +6,7 @@ import { IsEnabledCron } from './decorator/isEnabledCron.decorator';
 
 // run every minute
 const { TASK_CRON = '* * * * *' } = process.env;
+
 @Injectable()
 export class TaskService {
   private readonly logger = new Logger(TaskService.name);
